@@ -1,0 +1,3 @@
+['friday', 'wednesday', 'monday', 'saturday', 'thursday', 'tuesday', 'sunday', "do n't care", 'fr', 'n', 'we', 'train']
+['1', '5', '8', '6', '2', '7', '4', '3', '0', '9', '15', '`1', '10']
+['cambridge', 'birmingham new street', 'ely', 'norwich', 'bishops stortford', 'peterborough', 'stevenage', 'broxbourne', 'london liverpool street', 'leicester', 'stansted airport', 'kings lynn', 'london kings cross', 'birmingham', "do n't care", 'saint johns', 'wandlebury country park', 'liecester', 'panahar', 'cineworld', 'stansted', 'el shaddai', 'lon', 'cafe uno', 'leicaster', 'city hall', "rosa's bed and breakfast", 'norwhich', 'cam', 'brookshite', 'bro', 'cambrid', 'arbu', 'aylesbray lodge guest', 'alpha-milton', 'a', 'london', 'hamilton lodge', 'duxford', 'camboats']

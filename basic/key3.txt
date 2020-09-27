@@ -1,0 +1,7 @@
+restaurant-area
+restaurant-price range
+restaurant-book time
+restaurant-book people
+restaurant-food
+restaurant-name
+restaurant-book day

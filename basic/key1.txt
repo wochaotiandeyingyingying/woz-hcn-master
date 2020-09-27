@@ -1,0 +1,8 @@
+hotel-parking
+hotel-book people
+hotel-area
+hotel-type
+hotel-price range
+hotel-book day
+hotel-stars
+hotel-book stay

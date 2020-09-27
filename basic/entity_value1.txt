@@ -1,0 +1,8 @@
+['yes', "do n't care", 'no', 'free']
+['cheap', "do n't care", 'moderate', 'expensive']
+['hotel', 'guest house']
+['east', 'north', 'centre', 'south', 'west', "do n't care", 'southern aylesbray', 'cambridge', 'el shaddai', 'stevenage', 'place to be a guesthouse', 'peterborough', 'bishops stortford', 'cheap']
+['2', '1', '4', '5', '3', '8', '7', '6', 'six']
+['6', '1', '3', '5', '4', '2', '8', '7', 'six', '3.']
+['4', '2', '0', '3', "do n't care", '1', '5']
+['tuesday', 'friday', 'monday', 'wednesday', 'saturday', 'thursday', 'sunday']
