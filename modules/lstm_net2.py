@@ -3,6 +3,7 @@ from tensorflow.contrib.layers import xavier_initializer as xav
 from modules.entities import EntityTracker
 from modules.actions import ActionTracker
 import numpy as np
+from modules.attention import Attention
 
 class LSTM_net2():
 
@@ -34,9 +35,18 @@ class LSTM_net2():
                 # add relu/tanh here if necessary
                 projected_features = tf.matmul(features_, Wi) + bi
 
+                projected_features = tf.expand_dims(projected_features, dim=0)
+                num_units = projected_features.get_shape().as_list()[-1]
+                sl = projected_features.get_shape().as_list()[-2]
+                Attention_init = Attention()
+                projected_features_temp,a_tt  = Attention_init.attention_net(projected_features, sl, projected_features,
+                                                                             num_units,
+                                                                             8, 1, dropout_rate=0.5,
+                                                                             is_training=True, reuse=None)
+
                 lstm_f = tf.contrib.rnn.LSTMCell(nb_hidden, state_is_tuple=True)
 
-                lstm_op, state = lstm_f(inputs=projected_features, state=(init_state_c_, init_state_h_))
+                lstm_op, state = lstm_f(inputs=projected_features_temp, state=(init_state_c_, init_state_h_))
 
                 # reshape LSTM's state tuple (2,128) -> (1,256)
                 state_reshaped = tf.concat(axis=1, values=(state.c, state.h))

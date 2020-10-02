@@ -52,51 +52,51 @@ class EntityTracker():
         self.EntType = Enum('Entity Type', '<hotel_parking> <hotel_book_people> <hotel_area> <hotel_type> <hotel_price_range> <hotel_book_day> <hotel_stars> <hotel_book_stay> <train_day> <train_departure> <train_book_people> <restaurant_area> <restaurant_price_range> <restaurant_book_time> <restaurant_book_people> <restaurant_food> <restaurant_name> <restaurant_book_day>')
 
 #返回word的类型，由5种可能：party_size，location，cuisine，rest_type，传入的word
-    def ent_type(self, ent):
-        if ent in self.hotel_parking:
+    def ent_type(self, ent,paragraph_type):
+        if ent in self.hotel_parking and paragraph_type == '1':
             return self.EntType['<hotel_parking>'].name
-        elif ent in self.hotel_book_people:
+        elif ent in self.hotel_book_people and paragraph_type == '1':
             return self.EntType['<hotel_book_people>'].name
-        elif ent in self.hotel_area:
+        elif ent in self.hotel_area and paragraph_type == '1':
             return self.EntType['<hotel_area>'].name
-        elif ent in self.hotel_type:
+        elif ent in self.hotel_type and paragraph_type == '1':
             return self.EntType['<hotel_type>'].name
-        elif ent in self.hotel_price_range:
+        elif ent in self.hotel_price_range and paragraph_type == '1':
             return self.EntType['<hotel_price_range>'].name
-        elif ent in self.hotel_book_day:
+        elif ent in self.hotel_book_day and paragraph_type == '1':
             return self.EntType['<hotel_book_day>'].name
-        elif ent in self.hotel_stars:
+        elif ent in self.hotel_stars and paragraph_type == '1':
             return self.EntType['<hotel_stars>'].name
-        elif ent in self.hotel_book_stay:
+        elif ent in self.hotel_book_stay and paragraph_type == '1':
             return self.EntType['<hotel_book_stay>'].name
-        elif ent in self.train_day:
+        elif ent in self.train_day and paragraph_type == '2':
             return self.EntType['<train_day>'].name
-        elif ent in self.train_departure:
+        elif ent in self.train_departure and paragraph_type == '2':
             return self.EntType['<train_departure>'].name
-        elif ent in self.train_book_people:
+        elif ent in self.train_book_people and paragraph_type == '2':
             return self.EntType['<train_book_people>'].name
-        elif ent in self.restaurant_area:
+        elif ent in self.restaurant_area and paragraph_type == '3':
             return self.EntType['<restaurant_area>'].name
-        elif ent in self.restaurant_price_range:
+        elif ent in self.restaurant_price_range and paragraph_type == '3':
             return self.EntType['<restaurant_price_range>'].name
-        elif ent in self.restaurant_book_time:
+        elif ent in self.restaurant_book_time and paragraph_type == '3':
             return self.EntType['<restaurant_book_time>'].name
-        elif ent in self.restaurant_book_people:
+        elif ent in self.restaurant_book_people and paragraph_type == '3':
             return self.EntType['<restaurant_book_people>'].name
-        elif ent in self.restaurant_food:
+        elif ent in self.restaurant_food and paragraph_type == '3':
             return self.EntType['<restaurant_food>'].name
-        elif ent in self.restaurant_name:
+        elif ent in self.restaurant_name and paragraph_type == '3':
             return self.EntType['<restaurant_name>'].name
-        elif ent in self.restaurant_book_day:
+        elif ent in self.restaurant_book_day and paragraph_type == '3':
             return self.EntType['<restaurant_book_day>'].name
         else:
             return ent
 
 #提取话中的单词，并转化为槽位，没有对应的则原话返回：ok let me look into some options for you；api_call <cuisine> <location> <party_size> <rest_type>
-    def extract_entities(self, utterance, update=True):
+    def extract_entities(self, utterance, paragraph_type,update=True):
         tokenized = []
         for word in utterance.split(' '):
-            entity = self.ent_type(word)
+            entity = self.ent_type(word,paragraph_type)
             if word != entity and update:
                 self.entities[entity] = word
             tokenized.append(entity)

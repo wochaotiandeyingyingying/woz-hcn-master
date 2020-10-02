@@ -75,7 +75,19 @@ class ActionTracker():
 
     def get_action_templates(self):
         # responses:将每句话中的每个单词进行审查，如果是敏感词就替换成party_size，location，cuisine，rest_type中的一个，如果不是就不变动
-        responses = list(set([ self.et.extract_entities(response, update=False) for response in util.get_responses() ]))
+        #responses = list(set([ self.et.extract_entities(response, update=False) for response in util.get_responses() ]))
+        responses = []
+        for response in util.get_responses():
+            if response == '111':
+                paragraph_type = '1'
+            elif response == '222':
+                paragraph_type = '2'
+            elif response == '333':
+                paragraph_type = '3'
+            else:
+                responses.append(self.et.extract_entities(response , paragraph_type, update=False))
+        responses = list(set(responses))
+
         #返回额外的信息，将话中有resto_的进行操作，返回为：what do you think of this option: <restaurant>，here it is <info_phone>
         def extract_(response):
             template = []

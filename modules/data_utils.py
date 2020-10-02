@@ -28,7 +28,18 @@ class Data():
         responses = util.get_responses(dialogs)
 
 
-        responses = [ self.get_template_id(response) for response in responses ]
+        #responses = [ self.get_template_id(response) for response in responses ]
+        temp = []
+        for response in responses:
+            if response == '111':
+                paragraph_type = '1'
+            elif response == '222':
+                paragraph_type = '2'
+            elif response == '333':
+                paragraph_type = '3'
+            else:
+                temp.append(self.get_template_id(response , paragraph_type))
+        responses = list(set(temp))
         trainset = []
         # print('ddddddd')
         # print(utterances)
@@ -40,7 +51,7 @@ class Data():
         return trainset, dialog_indices
 
 
-    def get_template_id(self, response):
+    def get_template_id(self, response,paragraph_type):
 
         def extract_(response):
             template = []
@@ -56,5 +67,5 @@ class Data():
                     template.append(word)
             return ' '.join(template)
         return self.action_templates.index(
-                extract_(self.et.extract_entities(response, update=False))
+                extract_(self.et.extract_entities(response,paragraph_type, update=False))
                 )

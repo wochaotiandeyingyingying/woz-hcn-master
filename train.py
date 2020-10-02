@@ -25,9 +25,9 @@ class Trainer():
         at = ActionTracker(et)
         #获得用户说的话和对应的id，获得段落对话的行数：[('good morning', 3), ("i'd like to book a table with italian food", 7), ('<SILENCE>', 13), ('in paris', 6), ('for six people please', 14)...[{'start': 0, 'end': 21}, {'start': 21, 'end': 40}, {'start': 40, 'end': 59}, {'start': 59, 'end': 72},...
         self.dataset, dialog_indices = Data(et, at).trainset
-        print(dialog_indices)
         self.dialog_indices_tr = dialog_indices[:800]
         self.dialog_indices_dev = dialog_indices[800:1000]
+
         self.smooth_fun = bleu_score.SmoothingFunction()
         #dim=300,vocab_size=len(self.vocab),num_features=4    =>300+88+4=392
         obs_size = self.emb.dim + self.bow_enc.vocab_size + et.num_features
@@ -88,12 +88,12 @@ class Trainer():
         self.inputb = self.input_tenser['inputb']
         self.labela = self.input_tenser['labela']
         self.labelb = self.input_tenser['labelb']
-        for _ in range(10):
+        for _ in range(10000):
             loss_listb = []
             # with tf.Session(graph=self.graph1) as sess1:
             for i in range(len(self.inputa)):
                 #针对于段落的实体追踪，i是每一段话
-                # create entity tracker
+                # create entity tracker哦
                 et = EntityTracker()
                 # create action tracker
                 at = ActionTracker(et)
@@ -124,10 +124,10 @@ class Trainer():
                 at = ActionTracker(et)
                 # reset network
                 self.net1.reset_state()
-                for j in range(len(self.inputb[i])):#self.inputb[i]
+                for j in range(1,len(self.inputb[i])):#self.inputb[i]
                     u = self.inputb[i][j]
                     # u是用户说的话，r是位置
-                    u_ent = et.extract_entities(u)
+                    u_ent = et.extract_entities(u,self.inputb[i][0][0])
                     # u_ent_features：对et进行编码，返回4维矩阵
                     u_ent_features = et.context_features()
                     # u_emb：对用户说的话进行编码，得到一个300维度的矩阵
@@ -159,7 +159,7 @@ class Trainer():
             # reset network
             self.net1.reset_state()
             # u是用户说的话，r是位置
-            u_ent = et.extract_entities(u)
+            u_ent = et.extract_entities(u,self.inputb[1][0][0])
             # u_ent_features：对et进行编码，返回4维矩阵
             u_ent_features = et.context_features()
             # u_emb：对用户说的话进行编码，得到一个300维度的矩阵
@@ -233,7 +233,6 @@ class Trainer():
         # create action tracker
         at = ActionTracker(et)
         # reset network
-        self.net2.reset_state()
 
         dialog_accuracy = 0.
         for dialog_idx in self.dialog_indices_dev:
@@ -251,13 +250,13 @@ class Trainer():
 
             # iterate through dialog
             correct_examples = 0
-            for (u,r) in dialog:
-                # encode utterance
 
-                u_ent = et.extract_entities(u)
+            for i in range(1,len(dialog)):
+                # encode utterance
+                u_ent = et.extract_entities(dialog[i][0],dialog[0][0][0])
                 u_ent_features = et.context_features()
-                u_emb = self.emb.encode(u)
-                u_bow = self.bow_enc.encode(u)
+                u_emb = self.emb.encode(dialog[i][0])
+                u_bow = self.bow_enc.encode(dialog[i][0])
                 # concat features
                 features = np.concatenate((u_ent_features, u_emb, u_bow), axis=0)
                 # get action mask
@@ -265,14 +264,32 @@ class Trainer():
                 # forward propagation
                 #  train step
                 prediction = self.net2.forward(features, action_mask)
-                correct_examples += int(prediction == r)
+                correct_examples += int(prediction == dialog[i][1])
             # get dialog accuracy
             dialog_accuracy += correct_examples/len(dialog)
+
+            # for (u,r) in dialog:
+            #     # encode utterance
+            #     print(dialog)
+            #     print(u)
+            #     u_ent = et.extract_entities(u)
+            #     u_ent_features = et.context_features()
+            #     u_emb = self.emb.encode(u)
+            #     u_bow = self.bow_enc.encode(u)
+            #     # concat features
+            #     features = np.concatenate((u_ent_features, u_emb, u_bow), axis=0)
+            #     # get action mask
+            #     action_mask = at.action_mask()
+            #     # forward propagation
+            #     #  train step
+            #     prediction = self.net2.forward(features, action_mask)
+            #     correct_examples += int(prediction == r)
+            # # get dialog accuracy
+            # dialog_accuracy += correct_examples/len(dialog)
 
         return dialog_accuracy/num_dev_examples
 
     def getbleu(self):
-        print('ppp')
         # create entity tracker
         et = EntityTracker()
         # create action tracker
@@ -296,13 +313,12 @@ class Trainer():
             # iterate through dialog
             correct_examples = 0
             num = 0
-            for (u,r) in dialog:
+            for i in range(1,len(dialog)):
                 # encode utterance
-                num += 1
-                u_ent = et.extract_entities(u)
+                u_ent = et.extract_entities(dialog[i][0],dialog[0][0][0])
                 u_ent_features = et.context_features()
-                u_emb = self.emb.encode(u)
-                u_bow = self.bow_enc.encode(u)
+                u_emb = self.emb.encode(dialog[i][0])
+                u_bow = self.bow_enc.encode(dialog[i][0])
                 # concat features
                 features = np.concatenate((u_ent_features, u_emb, u_bow), axis=0)
                 # get action mask
@@ -310,7 +326,7 @@ class Trainer():
                 # forward propagation
                 #  train step
                 prediction = self.net2.forward(features, action_mask)
-                return  1
+                return 1
 
                 if num % 30 == 0:
                     references = at.action_templates[prediction]
